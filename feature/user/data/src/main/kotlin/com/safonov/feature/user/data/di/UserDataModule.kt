@@ -1,27 +1,24 @@
 package com.safonov.feature.user.data.di
 
+import com.safonov.core.data.source.local.AppDatabase
+import com.safonov.core.data.source.local.dao.UserDao
 import com.safonov.feature.user.data.repository.UserRepositoryImpl
 import com.safonov.feature.user.data.source.remote.UserApiService
 import com.safonov.github.feature.user.domain.repository.UserRepository
 import com.safonov.github.feature.user.domain.usecase.GetUsersUseCase
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
+import com.safonov.github.feature.user.domain.usecase.RequestUpdateUsersUseCase
 import org.koin.dsl.module
 
 val userDataModule = module {
-    factory { GetUsersUseCase(get()) }
+    factory { GetUsersUseCase(repository = get()) }
+    factory { RequestUpdateUsersUseCase(repository = get()) }
 
-    single<UserRepository> { UserRepositoryImpl(inject()) }
-
-    single {
-        HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(Json { ignoreUnknownKeys = true })
-            }
-        }
+    single<UserRepository> {
+        UserRepositoryImpl(
+            userApiService = inject(),
+            userDao = inject()
+        )
     }
-    factory { UserApiService(get()) }
+    single<UserApiService> { UserApiService(client = get()) }
+    single<UserDao> { get<AppDatabase>().userDao }
 }

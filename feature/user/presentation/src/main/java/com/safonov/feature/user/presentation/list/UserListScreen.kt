@@ -21,9 +21,9 @@ fun UserListScreen(
     var users by remember { mutableStateOf(emptyList<User>()) }
 
     LaunchedEffect(Unit) {
-         viewModel.getUser().getOrNull()?.let {
-             users = it
-         }
+        viewModel.flow.collect {
+            users = it
+        }
     }
 
     LazyColumn {

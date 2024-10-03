@@ -32,12 +32,10 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
 }
 
 dependencies {
+    implementation(project(":core:data"))
     implementation(project(":feature:user:domain"))
 
     implementation(libs.androidx.core.ktx)
@@ -49,8 +47,6 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.serialization)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
 
     // Room
     implementation(libs.androidx.room.runtime)

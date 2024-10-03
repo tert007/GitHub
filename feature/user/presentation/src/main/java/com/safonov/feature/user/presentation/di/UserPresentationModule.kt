@@ -5,5 +5,5 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val userPresentationModule = module {
-    viewModel { UserListViewModel(get()) }
+    viewModel { UserListViewModel(getUsersUseCase = get(), requestUpdateUsersUseCase = get()) }
 }

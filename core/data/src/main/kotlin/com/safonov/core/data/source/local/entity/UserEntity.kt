@@ -1,4 +1,4 @@
-package com.safonov.feature.user.data.source.local.entity
+package com.safonov.core.data.source.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
