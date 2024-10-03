@@ -23,8 +23,11 @@ internal class UserListViewModel(
     private val requestUpdateUsersUseCase: RequestUpdateUsersUseCase,
 ) : ViewModel(), MviViewModel<UserListUiState, UserListIntent> {
 
-    private val navigationTargetFlow: MutableStateFlow<UserListUiState.NavigationTarget?> = MutableStateFlow(null)
-    private val snackBarMessageFlow: MutableStateFlow<UserListUiState.SnackBarMessage?> = MutableStateFlow(null)
+    private val navigationTargetFlow: MutableStateFlow<UserListUiState.NavigationTarget?> =
+        MutableStateFlow(null)
+    private val snackBarMessageFlow: MutableStateFlow<UserListUiState.SnackBarMessage?> =
+        MutableStateFlow(null)
+    private val refreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val contentFlow: Flow<UserListUiState.ContentState> = getUsersUseCase()
         .onStart {
             requestUpdateUsers()
@@ -36,12 +39,19 @@ internal class UserListViewModel(
     override val uiState: StateFlow<UserListUiState> = combine(
         navigationTargetFlow,
         snackBarMessageFlow,
+        refreshingFlow,
         contentFlow
-    ) { navigationTarget, snackBarMessage, contentState ->
+    ) { navigationTarget, snackBarMessage, isRefreshing, contentState ->
         UserListUiState(
             navigationTarget = navigationTarget,
             message = snackBarMessage,
-            contentState = contentState
+            contentState = when (contentState) {
+                is UserListUiState.ContentState.Loaded -> contentState.copy(
+                    isRefreshing = isRefreshing
+                )
+
+                UserListUiState.ContentState.Loading -> contentState
+            }
         )
     }.stateIn(
         scope = viewModelScope,
@@ -70,11 +80,13 @@ internal class UserListViewModel(
     }
 
     private suspend fun requestUpdateUsers() {
+        refreshingFlow.tryEmit(true)
         requestUpdateUsersUseCase().onFailure { e ->
             Timber.e(e)
             snackBarMessageFlow.update {
                 return@update UserListUiState.SnackBarMessage.UnableFetchData
             }
         }
+        refreshingFlow.tryEmit(false)
     }
 }

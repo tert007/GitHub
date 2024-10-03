@@ -24,7 +24,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun UserListScreen(
     modifier: Modifier = Modifier,
-    onUserDetailsClick: (userId: Long) -> Unit,
+    onUserDetailsClick: (userId: Int) -> Unit,
 ) {
     val viewModel: UserListViewModel = koinViewModel()
     val state: UserListUiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -73,5 +73,5 @@ fun UserListScreen(
 
 // TODO add resources
 private fun UserListUiState.SnackBarMessage.toMessage(): String {
-    return "Unable fetch data"
+    return "Oops, something went wrong"
 }

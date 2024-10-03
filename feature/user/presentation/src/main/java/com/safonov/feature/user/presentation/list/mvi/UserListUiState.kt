@@ -23,6 +23,6 @@ internal data class UserListUiState(
         data object Loading : ContentState()
 
         @Immutable
-        data class Loaded(val items: List<User>) : ContentState()
+        data class Loaded(val items: List<User>, val isRefreshing: Boolean = false) : ContentState()
     }
 }
