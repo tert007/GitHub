@@ -23,35 +23,26 @@ internal class UserListViewModel(
     private val requestUpdateUsersUseCase: RequestUpdateUsersUseCase,
 ) : ViewModel(), MviViewModel<UserListUiState, UserListIntent> {
 
-    private val navigationTargetFlow: MutableStateFlow<UserListUiState.NavigationTarget?> =
-        MutableStateFlow(null)
-    private val snackBarMessageFlow: MutableStateFlow<UserListUiState.SnackBarMessage?> =
-        MutableStateFlow(null)
-    private val refreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private val contentFlow: Flow<UserListUiState.ContentState> = getUsersUseCase()
-        .onStart {
+    private val navigationTargetFlow = MutableStateFlow<UserListUiState.NavigationTarget?>(null)
+    private val snackBarMessageFlow = MutableStateFlow<UserListUiState.SnackBarMessage?>(null)
+    private val refreshingFlow = MutableStateFlow(false)
+
+    private val contentFlow: Flow<UserListUiState.ContentState> =
+        combine(refreshingFlow, getUsersUseCase()) { isRefreshing, users ->
+            UserListUiState.ContentState.Loaded(users, isRefreshing)
+        }.onStart {
             requestUpdateUsers()
-        }
-        .map { users ->
-            UserListUiState.ContentState.Loaded(users)
         }
 
     override val uiState: StateFlow<UserListUiState> = combine(
         navigationTargetFlow,
         snackBarMessageFlow,
-        refreshingFlow,
         contentFlow
-    ) { navigationTarget, snackBarMessage, isRefreshing, contentState ->
+    ) { navigationTarget, snackBarMessage, contentState ->
         UserListUiState(
             navigationTarget = navigationTarget,
             message = snackBarMessage,
-            contentState = when (contentState) {
-                is UserListUiState.ContentState.Loaded -> contentState.copy(
-                    isRefreshing = isRefreshing
-                )
-
-                UserListUiState.ContentState.Loading -> contentState
-            }
+            contentState = contentState
         )
     }.stateIn(
         scope = viewModelScope,
