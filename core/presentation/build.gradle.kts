@@ -38,14 +38,14 @@ android {
 
 dependencies {
     // Compose
-    api(platform(libs.androidx.compose.bom))
-    api(libs.androidx.ui)
-    api(libs.androidx.ui.graphics)
-    api(libs.androidx.ui.tooling.preview)
-    api(libs.androidx.material3)
+    api(platform(libs.compose.bom))
+    api(libs.compose.ui)
+    api(libs.compose.ui.graphics)
+    api(libs.compose.ui.tooling.preview)
+    api(libs.compose.material3)
 
-    androidTestApi(platform(libs.androidx.compose.bom))
-    debugApi(libs.androidx.ui.tooling)
+    androidTestApi(platform(libs.compose.bom))
+    debugApi(libs.compose.ui.tooling)
 
     // Other
     implementation(libs.androidx.core.ktx)

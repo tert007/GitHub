@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.safonov.core.presentation.ui.theme.GitHubUsersTheme
 import com.safonov.feature.user.presentation.list.UserListScreen
@@ -16,9 +15,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GitHubUsersTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    UserListScreen(modifier = Modifier.fillMaxSize())
-                }
+                UserListScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    onUserDetailsClick = { userId ->
+                        // TODO
+                    }
+                )
             }
         }
     }

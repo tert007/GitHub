@@ -41,6 +41,9 @@ dependencies {
 
     implementation(project(":feature:user:domain"))
 
+    // Timber
+    implementation(libs.timber)
+
     // Coil for image loading
     implementation(libs.coil.compose)
 
