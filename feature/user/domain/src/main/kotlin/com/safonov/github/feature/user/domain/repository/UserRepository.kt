@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
+    suspend fun findUser(id: Int): User?
     fun getUsersStream(): Flow<List<User>>
 
     /**

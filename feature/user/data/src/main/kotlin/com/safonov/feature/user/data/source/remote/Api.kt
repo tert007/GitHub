@@ -8,7 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 
-class UserApiService(private val client: HttpClient) {
+internal class UserApi(private val client: HttpClient) {
 
     suspend fun getGitHubUsers(): List<UserApiModel> {
         val response: HttpResponse = client.get("https://api.github.com/users") {

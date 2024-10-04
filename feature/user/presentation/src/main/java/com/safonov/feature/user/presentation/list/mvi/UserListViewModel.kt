@@ -3,15 +3,13 @@ package com.safonov.feature.user.presentation.list.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.safonov.core.presentation.mvi.MviViewModel
-import com.safonov.github.feature.user.domain.usecase.GetUsersUseCase
+import com.safonov.github.feature.user.domain.usecase.GetUsersStreamUseCase
 import com.safonov.github.feature.user.domain.usecase.RequestUpdateUsersUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -19,7 +17,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 internal class UserListViewModel(
-    getUsersUseCase: GetUsersUseCase,
+    getUsersStreamUseCase: GetUsersStreamUseCase,
     private val requestUpdateUsersUseCase: RequestUpdateUsersUseCase,
 ) : ViewModel(), MviViewModel<UserListUiState, UserListIntent> {
 
@@ -28,7 +26,7 @@ internal class UserListViewModel(
     private val refreshingFlow = MutableStateFlow(false)
 
     private val contentFlow: Flow<UserListUiState.ContentState> =
-        combine(refreshingFlow, getUsersUseCase()) { isRefreshing, users ->
+        combine(refreshingFlow, getUsersStreamUseCase()) { isRefreshing, users ->
             UserListUiState.ContentState.Loaded(users, isRefreshing)
         }.onStart {
             requestUpdateUsers()

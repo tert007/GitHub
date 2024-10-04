@@ -4,7 +4,7 @@ import com.safonov.github.feature.user.domain.model.User
 import com.safonov.github.feature.user.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetUsersUseCase(
+class GetUsersStreamUseCase(
     private val repository: UserRepository
 ) {
     operator fun invoke(): Flow<List<User>> {

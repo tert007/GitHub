@@ -18,7 +18,7 @@ internal fun UserEntity.toModel() = User(
     url = url
 )
 
-internal fun User.toEntity() = UserEntity(
+internal fun UserApiModel.toEntity() = UserEntity(
     id = id,
     login = login,
     avatarUrl = avatarUrl,
